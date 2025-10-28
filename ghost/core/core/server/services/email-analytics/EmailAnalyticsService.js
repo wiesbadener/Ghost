@@ -534,16 +534,10 @@ module.exports = class EmailAnalyticsService {
         const memberStartTime = Date.now();
         // @ts-expect-error
         const memberMetric = this.prometheusClient?.getMetric('email_analytics_aggregate_member_stats_count');
-        const allTimings = [];
-        const BATCH_SIZE = 100;
 
-        for (let i = 0; i < memberIds.length; i += BATCH_SIZE) {
-            const batch = memberIds.slice(i, i + BATCH_SIZE);
-            const timings = await this.aggregateMemberStatsBatch(batch);
-            if (timings) {
-                allTimings.push(timings);
-            }
-            memberMetric?.inc(batch.length);
+        for (const memberId of memberIds) {
+            await this.aggregateMemberStats(memberId);
+            memberMetric?.inc(1);
         }
         const memberTime = Date.now() - memberStartTime;
 
@@ -561,11 +555,11 @@ module.exports = class EmailAnalyticsService {
     }
 
     /**
-     * Aggregate member stats for multiple member IDs in a batch.
-     * @param {string[]} memberIds - Array of member IDs to aggregate stats for.
+     * Aggregate member stats for a single member ID.
+     * @param {string} memberId - The member ID to aggregate stats for.
      * @returns {Promise<void>}
      */
-    async aggregateMemberStatsBatch(memberIds) {
-        return this.queries.aggregateMemberStatsBatch(memberIds);
+    async aggregateMemberStats(memberId) {
+        return this.queries.aggregateMemberStats(memberId);
     }
 };
