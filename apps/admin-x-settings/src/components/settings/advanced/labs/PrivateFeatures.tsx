@@ -43,6 +43,10 @@ const features: Feature[] = [{
     title: 'Welcome Emails',
     description: 'Enables features related to sending welcome emails to new members',
     flag: 'welcomeEmails'
+}, {
+    title: 'Domain Warmup',
+    description: 'Enable custom sending domain warmup for gradual email volume increases',
+    flag: 'domainWarmup'
 }];
 
 const AlphaFeatures: React.FC = () => {
